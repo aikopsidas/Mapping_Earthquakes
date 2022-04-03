@@ -86,8 +86,6 @@ L.geoJSON(data, {
     }, 
      // We set the style for each circleMarker using our styleInfo function.
     style: styleInfo, 
-    // We create a popup for each circleMarker to display the magnitude and
-    //  location of the earthquake after the marker has been created and styled.
     onEachFeature: function(feature, layer) {
         layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
       }
