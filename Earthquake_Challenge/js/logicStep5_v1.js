@@ -35,12 +35,14 @@ let map = L.map('mapid', {
 // pass our map layers into our layers control and add teh layers control to the map.
 L.control.layers(baseMaps, overlays).addTo(map);
 
-// Add GeoJSON data.
-let earthQuakeData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+
 
 // grabbing our GeoJSON data
-d3.json(earthQuakeData).then(function(data) {
-    console.log(data);
+// Retrieve the earthquake GeoJSON data.
+d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
+  // Creating a GeoJSON layer with the retrieved data.
+  L.geoJSON(data).addTo(map);
+
     function styleInfo(feature) {
         return {
           opacity: 1,
@@ -86,6 +88,8 @@ L.geoJSON(data, {
     }, 
      // We set the style for each circleMarker using our styleInfo function.
     style: styleInfo, 
+    // We create a popup for each circleMarker to display the magnitude and
+    //  location of the earthquake after the marker has been created and styled.
     onEachFeature: function(feature, layer) {
         layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
       }
@@ -94,32 +98,36 @@ L.geoJSON(data, {
 // = then we add the earthquake layer to our map.
 earthquakes.addTo(map);
 
+//create legend control object
 let legend = L.control({
-  position: 'bottomright'
+  position: "bottomright"
 });
+// Then add all the details for the legend.
+legend.onAdd = function() {
+  let div = L.DomUtil.create("div", "info legend");
 
-legend.onAdd = function () {
-    let div = L.DomUtil.create('div', 'info legend');
-
-    const magnitudes = [0, 1, 2, 3, 4, 5];
-    const colors = [
-      "#98ee00",
-      "#d4ee00",
-      "#eecc00",
-      "#ee9c00",
-      "#ea822c",
-      "#ea2c2c"
-    ];
-
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < magnitudes.length; i++) {
-      console.log(colors[i]);
-        div.innerHTML +=
-            '<i style="background:' + colors[i] +'"></i> ' +
-            magnitudes[i] + (magnitudes[i + 1] ? '&ndash;' + magnitudes[i + 1] + '<br>' : '+');
-    }
-    return div;
+const magnitudes = [0, 1, 2, 3, 4, 5];
+const colors = [
+  "#98ee00",
+  "#d4ee00",
+  "#eecc00",
+  "#ee9c00",
+  "#ea822c",
+  "#ea2c2c"
+];
+// Looping through our intervals to generate a label with a colored square for each interval.
+for (var i = 0; i < magnitudes.length; i++) {
+  console.log(colors[i]);
+  div.innerHTML +=
+    "<i style='background: " + colors[i] + "'></i> " +
+    magnitudes[i] + (magnitudes[i + 1] ? "&ndash;" + magnitudes[i + 1] + "<br>" : "+");
+}
+return div;
 };
 
 legend.addTo(map);
+
+
+
+
 });

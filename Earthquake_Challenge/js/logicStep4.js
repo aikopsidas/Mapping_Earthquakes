@@ -86,6 +86,8 @@ L.geoJSON(data, {
     }, 
      // We set the style for each circleMarker using our styleInfo function.
     style: styleInfo, 
+    // We create a popup for each circleMarker to display the magnitude and
+    //  location of the earthquake after the marker has been created and styled.
     onEachFeature: function(feature, layer) {
         layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
       }
@@ -93,33 +95,4 @@ L.geoJSON(data, {
 
 // = then we add the earthquake layer to our map.
 earthquakes.addTo(map);
-
-let legend = L.control({
-  position: 'bottomright'
-});
-
-legend.onAdd = function () {
-    let div = L.DomUtil.create('div', 'info legend');
-
-    const magnitudes = [0, 1, 2, 3, 4, 5];
-    const colors = [
-      "#98ee00",
-      "#d4ee00",
-      "#eecc00",
-      "#ee9c00",
-      "#ea822c",
-      "#ea2c2c"
-    ];
-
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < magnitudes.length; i++) {
-      console.log(colors[i]);
-        div.innerHTML +=
-            '<i style="background:' + colors[i] +'"></i> ' +
-            magnitudes[i] + (magnitudes[i + 1] ? '&ndash;' + magnitudes[i + 1] + '<br>' : '+');
-    }
-    return div;
-};
-
-legend.addTo(map);
 });
